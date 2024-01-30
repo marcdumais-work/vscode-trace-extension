@@ -1,0 +1,21 @@
+# Textual output:
+npx depcruise vscode-trace-extension/src  
+
+# Generate graph:
+
+npx depcruise vscode-trace-extension/src  --output-type dot | dot -T svg > dependency-graph.svg
+
+# concentrate only on "vscode-trace-extension" "module"
+npx depcruise vscode-trace-extension/src --include-only "vscode-trace-extension"  --output-type dot | dot -T svg > dependency-graph-only-extension.svg
+
+# play with "collapse"
+npx depcruise vscode-trace-extension/src --collapse 2  --output-type dot | dot -T svg > dependency-graph-collapse2.svg
+npx depcruise vscode-trace-extension/src --collapse 3  --output-type dot | dot -T svg > dependency-graph-collapse3.svg
+npx depcruise vscode-trace-extension/src --collapse 4  --output-type dot | dot -T svg > dependency-graph-collapse4.svg
+
+# graph embedded in HTML:
+npx depcruise -v -T dot vscode-trace-extension/src  | dot -T svg | npx depcruise-wrap-stream-in-html > dependencygraph.html
+
+# Doc:
+https://www.npmjs.com/package/dependency-cruiser
+https://github.com/sverweij/dependency-cruiser/blob/HEAD/doc/output-format.md
