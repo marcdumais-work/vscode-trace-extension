@@ -1,0 +1,10 @@
+tag: v0.2.0
+name: First release on open-vsx.org!
+
+commitInclude:
+  parentOfMergeCommit: true
+
+releaseNoteGenerator:
+    showAbbrevHash: true
+    usePullRequestMetadata: true
+    usePullRequestLink: true
