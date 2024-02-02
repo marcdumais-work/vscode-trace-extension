@@ -10,6 +10,14 @@ on:
 
 jobs:
 
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug workflow
+        run: |
+          echo "github.event_name: " ${{github.event_name}}
+          echo "github.ref: " ${{ github.ref }}
+
   build-test:
     name: Build and run UI Tests
     timeout-minutes: 60
