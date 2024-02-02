@@ -5,7 +5,7 @@ on:
   # create:
   release:
     types:
-      - created
+      - published
   push:
     branches: [ master ]
     # tags:
