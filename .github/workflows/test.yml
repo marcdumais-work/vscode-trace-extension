@@ -1,0 +1,19 @@
+name: Test release published, created, released events
+
+on:
+  # branch or tag created  
+  # create:
+  release:
+    types:
+      - published
+      - created
+      - released
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug workflow
+        run: |
+          echo "github.event_name: " ${{github.event_name}}
+          echo "github.ref: " ${{ github.ref }}
