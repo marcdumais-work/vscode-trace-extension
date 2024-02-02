@@ -8,6 +8,10 @@ on:
       - published
       - created
       - released
+  push:
+    tags:
+      - '*'
+
 
 jobs:
   debug:
