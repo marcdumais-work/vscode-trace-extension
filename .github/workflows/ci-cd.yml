@@ -1,12 +1,12 @@
 name: CI/CD
 
 on:
+  # branch or tag created  
+  create:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  # branch or tag created  
-  create:
 
 jobs:
 
