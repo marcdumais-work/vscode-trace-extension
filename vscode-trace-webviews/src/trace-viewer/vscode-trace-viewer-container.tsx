@@ -49,7 +49,10 @@ class TraceViewerContainer extends React.Component<{}, VscodeAppState> {
         this._signalHandler.viewRangeUpdated(payload);
     private onSelectionRangeUpdated = (payload: TimeRangeUpdatePayload): void =>
         this._signalHandler.selectionRangeUpdated(payload);
-    private onExperimentUpdated = (payload: Experiment): void => this._signalHandler.experimentUpdated(payload);
+    private onExperimentUpdated = (payload: Experiment): void => { 
+        console.log(`(webview[${signalManager().getId()}, ${this._signalHandler.getId()}]) <<< (extensionHost???):  TraceViewerContainer#onExperimentUpdated(): received Signals.EXPERIMENT_UPDATED[${payload?.name}]`);
+        this._signalHandler.experimentUpdated(payload);
+    }
 
     private _onProperties = (properties: { [key: string]: string }): void => this.doHandlePropertiesSignal(properties);
     private _onSaveAsCSV = (payload: { traceId: string; data: string }): void => this.doHandleSaveAsCSVSignal(payload);
@@ -108,14 +111,17 @@ class TraceViewerContainer extends React.Component<{}, VscodeAppState> {
             serverStatus: true
         };
         this._signalHandler = new VsCodeMessageManager();
+        console.log(`[webview constructor] TraceViewerContainer (webview) - constructor() - VsCodeMessageManager/SignalManager:  ${this._signalHandler.getId()},  ${signalManager().getId()}`);
 
         window.addEventListener('message', event => {
             const message = event.data; // The JSON data our extension sent
+            console.log(`(webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.*: ${message.command}`);
             switch (message.command) {
                 case VSCODE_MESSAGES.SET_EXPERIMENT:
                     this.doHandleExperimentSetSignal(convertSignalExperiment(JSONBig.parse(message.data)), false);
                     break;
                 case VSCODE_MESSAGES.SET_TSP_CLIENT:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.SET_TSP_CLIENT`);
                     this.setState(
                         {
                             tspClientProvider: new TspClientProvider(message.data, this._signalHandler)
@@ -131,6 +137,7 @@ class TraceViewerContainer extends React.Component<{}, VscodeAppState> {
                     );
                     break;
                 case VSCODE_MESSAGES.ADD_OUTPUT:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.ADD_OUTPUT`);
                     // FIXME: JSONBig.parse() create bigint if numbers are small
                     // Not an issue right now for output descriptors.
                     if (message?.data) {
@@ -139,6 +146,7 @@ class TraceViewerContainer extends React.Component<{}, VscodeAppState> {
                     }
                     break;
                 case VSCODE_MESSAGES.OUTPUT_DATA_CHANGED:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.OUTPUT_DATA_CHANGED`);
                     if (message?.data) {
                         const descriptors: OutputDescriptor[] = JSONBig.parse(message.data);
                         this.doHandleOutputDataChanged(descriptors);
@@ -160,14 +168,18 @@ class TraceViewerContainer extends React.Component<{}, VscodeAppState> {
                     this.redo();
                     break;
                 case VSCODE_MESSAGES.UPDATE_ZOOM:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.UPDATE_ZOOM`);
                     this.updateZoom(message.data);
                 case VSCODE_MESSAGES.VIEW_RANGE_UPDATED:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.VIEW_RANGE_UPDATED`);
                     signalManager().fireViewRangeUpdated(JSONBig.parse(message.data));
                     break;
                 case VSCODE_MESSAGES.SELECTION_RANGE_UPDATED:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.SELECTION_RANGE_UPDATED`);
                     signalManager().fireSelectionRangeUpdated(JSONBig.parse(message.data));
                     break;
                 case VSCODE_MESSAGES.REQUEST_SELECTION_RANGE_CHANGE:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.REQUEST_SELECTION_RANGE_CHANGE`);
                     const { experimentUUID, timeRange } = JSONBig.parse(message.data);
                     const payload = {
                         experimentUUID,
@@ -176,23 +188,28 @@ class TraceViewerContainer extends React.Component<{}, VscodeAppState> {
                     signalManager().fireRequestSelectionRangeChange(payload);
                     break;
                 case VSCODE_MESSAGES.UPDATE_MARKER_CATEGORY_STATE:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.UPDATE_MARKER_CATEGORY_STATE`);
                     if (message?.data) {
                         const selection: string[] = JSON.parse(message.data);
                         this.updateAllMarkerCategoryState(selection);
                     }
                     break;
                 case VSCODE_MESSAGES.UPDATE_MARKER_SET_STATE:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.UPDATE_MARKER_SET_STATE`);
                     if (message?.data) {
                         this.updateMarkerSetState(message.data);
                     }
                     break;
                 case VSCODE_MESSAGES.GET_MARKER_CATEGORIES:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.GET_MARKER_CATEGORIES`);
                     this._signalHandler.fetchMarkerCategories(this.toolbarMarkerCategoriesMap);
                     break;
                 case VSCODE_MESSAGES.GET_MARKER_SETS:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.GET_MARKER_SETS`);
                     this._signalHandler.fetchMarkerSets(this.markerSetsMap);
                     break;
                 case VSCODE_MESSAGES.EXPERIMENT_SELECTED:
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceViewerContainer: webview received: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${convertSignalExperiment(JSONBig.parse(message.data)).name}]`);
                     this.doHandleExperimentSelectedSignal(convertSignalExperiment(JSONBig.parse(message.data)));
                     break;
                 case VSCODE_MESSAGES.TRACE_SERVER_URL_CHANGED:

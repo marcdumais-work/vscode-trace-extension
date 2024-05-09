@@ -169,6 +169,7 @@ export class TraceViewerPanel {
     ) {
         this._extensionUri = extensionUri;
         this._statusService = statusService;
+        console.log(`[${signalManager().getId()}, ] TraceViewerPanel#constructor(ext uri= ${extensionUri}, name= ${name}) - about to create webview panel! `);
 
         // Create and show a new webview panel
         this._panel = vscode.window.createWebviewPanel(TraceViewerPanel.viewType, name, column, {
@@ -212,7 +213,7 @@ export class TraceViewerPanel {
                 setStatusFromPanel(name);
                 if (this._experiment) {
                     signalManager().fireTraceViewerTabActivatedSignal(this._experiment);
-                    signalManager().fireExperimentSelectedSignal(this._experiment);
+                    // signalManager().fireExperimentSelectedSignal(this._experiment);
                 }
             }
         });
@@ -225,6 +226,7 @@ export class TraceViewerPanel {
         // Handle messages from the webview
         this._panel.webview.onDidReceiveMessage(
             message => {
+                console.log(`(extensionHost[${signalManager().getId()}]) <<< (webview):  TraceViewerPanel: Received webview message: ${message.command}`);
                 switch (message.command) {
                     case VSCODE_MESSAGES.ALERT:
                         vscode.window.showErrorMessage(message.text);
@@ -346,6 +348,7 @@ export class TraceViewerPanel {
         if (this._experiment && experiment && this._experiment.UUID === experiment.UUID) {
             this._panel.reveal();
             const wrapper: string = JSONBig.stringify(experiment);
+            console.log(`(extensionHost[${signalManager().getId()}]) >>> (webview):  TraceViewerPanel#doHandleExperimentSelectedSignal(): sending message to webview: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${experiment.name}]`);
             this._panel.webview.postMessage({ command: VSCODE_MESSAGES.EXPERIMENT_SELECTED, data: wrapper });
         }
     }

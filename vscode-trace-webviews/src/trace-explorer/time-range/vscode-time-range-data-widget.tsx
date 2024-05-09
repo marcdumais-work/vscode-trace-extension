@@ -34,11 +34,15 @@ class TimeRangeDataWidget extends React.Component {
         this._signalHandler = new VsCodeMessageManager();
         this._reactRef = React.createRef();
 
+        console.log(`[webview constructor] TimeRangeDataWidget (webview) - constructor() - VsCodeMessageManager/SignalManager:  ${this._signalHandler.getId()},  ${signalManager().getId()}`);
+
         window.addEventListener('message', event => {
             const { command, data } = event.data;
+            console.log(`(webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TimeRangeDataWidget: webview received: VSCODE_MESSAGES.*: ${data.command}`);
 
             switch (command) {
                 case VSCODE_MESSAGES.RESTORE_VIEW:
+                    console.log(`   (webview[${this._signalHandler.getId()}, ${signalManager().getId}]) <<< (extensionHost???):  TimeRangeDataWidget: webview received: VSCODE_MESSAGES.RESTORE_VIEW`);
                     const { mapArray, activeData } = JSONBig.parse(data);
                     this.restoreState(mapArray, activeData);
                     return;
@@ -46,20 +50,24 @@ class TimeRangeDataWidget extends React.Component {
                     signalManager().fireCloseTraceViewerTabSignal(data);
                     break;
                 case VSCODE_MESSAGES.EXPERIMENT_SELECTED:
+                    console.log(`   (webview[${this._signalHandler.getId()}, ${signalManager().getId}]) <<< (extensionHost???):  TimeRangeDataWidget: webview received: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${convertSignalExperiment(JSONBig.parse(data.wrapper)).name}]`);
                     signalManager().fireExperimentSelectedSignal(
                         data?.wrapper ? convertSignalExperiment(JSONBig.parse(data.wrapper)) : undefined
                     );
                     break;
                 case VSCODE_MESSAGES.EXPERIMENT_UPDATED:
+                    console.log(`   (webview[${this._signalHandler.getId()}, ${signalManager().getId}]) <<< (extensionHost???):  TimeRangeDataWidget: webview received: VSCODE_MESSAGES.EXPERIMENT_UPDATED`);
                     signalManager().fireExperimentUpdatedSignal(convertSignalExperiment(JSONBig.parse(data.wrapper)));
                     break;
                 case VSCODE_MESSAGES.EXPERIMENT_CLOSED:
                     signalManager().fireExperimentClosedSignal(convertSignalExperiment(JSONBig.parse(data.wrapper)));
                     break;
                 case VSCODE_MESSAGES.SELECTION_RANGE_UPDATED:
+                    console.log(`   (webview[${this._signalHandler.getId()}, ${signalManager().getId}]) <<< (extensionHost???):  TimeRangeDataWidget: webview received: VSCODE_MESSAGES.SELECTION_RANGE_UPDATED`);
                     signalManager().fireSelectionRangeUpdated(JSONBig.parse(data));
                     break;
                 case VSCODE_MESSAGES.VIEW_RANGE_UPDATED:
+                    console.log(`   (webview[${this._signalHandler.getId()}, ${signalManager().getId}]) <<< (extensionHost???):  TimeRangeDataWidget: webview received: VSCODE_MESSAGES.VIEW_RANGE_UPDATED`);
                     signalManager().fireViewRangeUpdated(JSONBig.parse(data));
                     break;
             }

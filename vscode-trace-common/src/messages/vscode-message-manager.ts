@@ -76,8 +76,11 @@ export const VSCODE_MESSAGES = {
 };
 
 export class VsCodeMessageManager extends Messages.MessageManager {
+    managerId: string;
     constructor() {
         super();
+        this.managerId = getNonce();
+        console.log(`*** Creation of VsCodeMessageManager, id: ${this.managerId}`);
     }
 
     addStatusMessage(
@@ -132,6 +135,7 @@ export class VsCodeMessageManager extends Messages.MessageManager {
     }
 
     experimentSelected(experiment?: Experiment | undefined): void {
+        console.log(`(webview[${this.managerId}]) >>> (extensionHost) VsCodeMessageManager#experimentSelected(): webview sending VSCODE_MESSAGES.EXPERIMENT_SELECTED (${experiment?.name}) to extensionHost`);
         const wrapper = experiment ? JSONBig.stringify(experiment) : undefined;
         const data = { wrapper };
         vscode.postMessage({ command: VSCODE_MESSAGES.EXPERIMENT_SELECTED, data });
@@ -190,11 +194,13 @@ export class VsCodeMessageManager extends Messages.MessageManager {
     }
 
     setMarkerSetsContext(context: boolean): void {
+        console.log(`(webview[${this.managerId}]) >>> (extensionHost) VsCodeMessageManager#setMarkerSetsContext(): webview sending VSCODE_MESSAGES.MARKER_SETS_CONTEXT to extensionHost`);
         const status: string = JSON.stringify(context);
         vscode.postMessage({ command: VSCODE_MESSAGES.MARKER_SETS_CONTEXT, data: { status } });
     }
 
     setMarkerCategoriesContext(context: boolean): void {
+        console.log(`(webview[${this.managerId}]) >>> (extensionHost) VsCodeMessageManager#setMarkerCategoriesContext(): webview sending VSCODE_MESSAGES.MARKER_CATEGORIES_CONTEXT to extensionHost`);
         const status: string = JSON.stringify(context);
         vscode.postMessage({ command: VSCODE_MESSAGES.MARKER_CATEGORIES_CONTEXT, data: { status } });
     }
@@ -208,4 +214,17 @@ export class VsCodeMessageManager extends Messages.MessageManager {
         const data = JSON.stringify(payload);
         vscode.postMessage({ command: VSCODE_MESSAGES.CONTEXT_MENU_ITEM_CLICKED, data: data });
     }
+
+    getId (): string {
+        return this.managerId;
+    }
+}
+
+function getNonce() {
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 8; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
 }

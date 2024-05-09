@@ -61,6 +61,7 @@ export class TraceExplorerOpenedTracesViewProvider extends AbstractTraceExplorer
     ): void {
         webviewView.webview.onDidReceiveMessage(
             message => {
+                console.log(`(extensionHost[${signalManager().getId()}]) <<< (webview):  TraceExplorerOpenedTracesViewProvider: Received webview message: ${message.command}`);
                 const command: string = message.command;
                 const data: any = message.data;
                 switch (command) {
@@ -116,6 +117,7 @@ export class TraceExplorerOpenedTracesViewProvider extends AbstractTraceExplorer
                         } else {
                             experiment = undefined;
                         }
+                        console.log(`   (extensionHost[${signalManager().getId()}]) <<< (webview): TraceExplorerOpenedTracesViewProvider: Received webview message: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${experiment?.name}]`);
                         signalManager().fireExperimentSelectedSignal(experiment);
                     }
                 }

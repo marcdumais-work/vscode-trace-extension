@@ -35,6 +35,7 @@ export class TraceExplorerAvailableViewsProvider extends AbstractTraceExplorerPr
     ): void {
         webviewView.webview.onDidReceiveMessage(
             message => {
+                console.log(`(extensionHost[${signalManager().getId()}]) <<< (webview): TraceExplorerAvailableViewsProvider: Received webview message: ${message.command}`);
                 const command: string = message.command;
                 const data: any = message.data;
                 switch (command) {
@@ -75,6 +76,7 @@ export class TraceExplorerAvailableViewsProvider extends AbstractTraceExplorerPr
                             } else {
                                 this._selectedExperiment = undefined;
                             }
+                            console.log(   `(extensionHost[${signalManager().getId()}]) <<< (webview): TraceExplorerAvailableViewsProvider: Received webview message: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${this._selectedExperiment?.name}]`);
                             signalManager().fireExperimentSelectedSignal(this._selectedExperiment);
                         } finally {
                             this._selectionOngoing = false;
@@ -101,6 +103,7 @@ export class TraceExplorerAvailableViewsProvider extends AbstractTraceExplorerPr
         if (!this._selectionOngoing && this._view) {
             this._selectedExperiment = experiment;
             const wrapper: string = JSONBig.stringify(experiment);
+            console.log(`(extensionHost[${signalManager().getId()}]) >>> (webview): TraceExplorerAvailableViewsProvider: Forwarding message to webview: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${this._selectedExperiment?.name}]`);
             this._view.webview.postMessage({ command: VSCODE_MESSAGES.EXPERIMENT_SELECTED, data: wrapper });
         }
     }

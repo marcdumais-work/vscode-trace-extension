@@ -27,6 +27,7 @@ export class TraceExplorerTimeRangeDataProvider extends AbstractTraceExplorerPro
     ): void {
         webviewView.webview.onDidReceiveMessage(
             message => {
+                console.log(`(extensionHost[${signalManager().getId()}]) <<< (webview):  TraceExplorerTimeRangeDataProvider: Received webview message: ${message.command}`);
                 const command = message?.command;
                 const parsedData = message?.data ? JSONBig.parse(message.data) : undefined;
 
@@ -88,6 +89,7 @@ export class TraceExplorerTimeRangeDataProvider extends AbstractTraceExplorerPro
     };
 
     private onExperimentSelected = (experiment: Experiment | undefined) => {
+        console.log(`(extensionHost[${signalManager().getId()}]) >>> (webview):  TraceExplorerTimeRangeDataProvider#onExperimentSelected(): sending message to webview: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${experiment?.name}]`);
         const data = { wrapper: experiment ? JSONBig.stringify(experiment) : undefined };
         this._view?.webview.postMessage({ command: VSCODE_MESSAGES.EXPERIMENT_SELECTED, data });
         if (experiment) {

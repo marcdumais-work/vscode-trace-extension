@@ -24,9 +24,11 @@ class TraceExplorerProperties extends React.Component<{}, PropertiesViewState> {
             properties: {}
         };
         this._signalHandler = new VsCodeMessageManager();
+        console.log(`[webview constructor] TraceExplorerProperties (webview) - constructor() - VsCodeMessageManager/SignalManager:  ${this._signalHandler.getId()},  ${signalManager().getId()}`);
 
         window.addEventListener('message', event => {
             const message = event.data; // The JSON data our extension sent
+            console.log(`(webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceExplorerProperties: webview received: VSCODE_MESSAGES.*: ${message.command}`);
             switch (message.command) {
                 case 'receivedProperties':
                     signalManager().fireItemPropertiesSignalUpdated(message.data.properties);

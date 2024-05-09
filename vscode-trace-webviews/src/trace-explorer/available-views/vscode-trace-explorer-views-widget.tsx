@@ -36,8 +36,11 @@ class TraceExplorerViewsWidget extends React.Component<{}, AvailableViewsAppStat
             tspClientProvider: undefined
         };
         this._signalHandler = new VsCodeMessageManager();
+        console.log(`[webview constructor] TraceExplorerViewWidget (webview) - constructor() - VsCodeMessageManager/SignalManager:  ${this._signalHandler.getId()},  ${signalManager().getId()}`);
+
         window.addEventListener('message', event => {
             const message = event.data; // The JSON data our extension sent
+            console.log(`(webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceExplorerViewWidget: webview received: VSCODE_MESSAGES.*: ${message.command}`);
             switch (message.command) {
                 case VSCODE_MESSAGES.SET_TSP_CLIENT:
                     this.setState({
@@ -49,6 +52,7 @@ class TraceExplorerViewsWidget extends React.Component<{}, AvailableViewsAppStat
                     if (message.data) {
                         experiment = convertSignalExperiment(JSONBig.parse(message.data));
                     }
+                    console.log(`   (webview[${this._signalHandler.getId()}]) <<< (extensionHost):  TraceExplorerViewWidget: webview received: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${experiment?.name}]`);
                     signalManager().fireExperimentSelectedSignal(experiment);
                     break;
                 case VSCODE_MESSAGES.TRACE_SERVER_URL_CHANGED:
@@ -72,6 +76,7 @@ class TraceExplorerViewsWidget extends React.Component<{}, AvailableViewsAppStat
     }
 
     protected doHandleExperimentSelectedSignal(experiment: Experiment | undefined): void {
+        console.log(`(webview [${this._signalHandler.getId()}] ) >>> (extensionHost):  TraceExplorerViewsWidget#doHandleExperimentSelectedSignal: webview sends: VSCODE_MESSAGES.EXPERIMENT_SELECTED[${experiment?.name}]`);
         this._signalHandler.experimentSelected(experiment);
     }
 
