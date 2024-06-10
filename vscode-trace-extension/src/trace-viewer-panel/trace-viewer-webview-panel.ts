@@ -507,11 +507,11 @@ export class TraceViewerPanel {
 				<title>React App</title>
 				<meta http-equiv="Content-Security-Policy"
 					content="default-src 'none';
-					img-src vscode-resource: https:;
+                    img-src vscode-resource: https: data:;
 					script-src 'nonce-${nonce}' 'unsafe-eval';
 					style-src ${webview.cspSource} vscode-resource: 'unsafe-inline' http: https: data:;
 					connect-src ${getTraceServerUrl()};
-					font-src ${webview.cspSource}">
+                    font-src ${webview.cspSource} data:;">
 				<link href="${codiconsUri}" rel="stylesheet" />
 				<base href="${packUri}/">
 			</head>
@@ -545,11 +545,11 @@ export class TraceViewerPanel {
 				<title>React App</title>
 				<meta http-equiv="Content-Security-Policy"
 					content="default-src 'none';
-					img-src vscode-resource: https:;
+                    img-src vscode-resource: https: data:;
 					script-src 'nonce-${nonce}' 'unsafe-eval';
 					style-src ${webview.cspSource} vscode-resource: 'unsafe-inline' http: https: data:;
 					connect-src ${getTraceServerUrl()};
-					font-src ${webview.cspSource}">
+                    font-src ${webview.cspSource} data:;">
 				<link href="${codiconsUri}" rel="stylesheet" />
 				<base href="${packUri}/">
 			</head>

@@ -71,6 +71,7 @@ export abstract class AbstractTraceExplorerProvider implements vscode.WebviewVie
 
     /* eslint-disable max-len */
     protected _getHtmlForWebview(webview: vscode.Webview) {
+        console.log(`*** webview.cspSource: "${webview.cspSource}"`);
         // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'pack', this._webviewScript));
         const codiconsUri = webview.asWebviewUri(
@@ -90,11 +91,11 @@ export abstract class AbstractTraceExplorerProvider implements vscode.WebviewVie
 				<title>React App</title>
 				<meta http-equiv="Content-Security-Policy"
 					content="default-src 'none';
-					img-src vscode-resource: https:;
+                    img-src vscode-resource: https: data:;
 					script-src 'nonce-${nonce}' 'unsafe-eval';
 					style-src ${webview.cspSource} vscode-resource: 'unsafe-inline' http: https: data:;
 					connect-src ${getTraceServerUrl()};
-					font-src ${webview.cspSource}">
+                    font-src ${webview.cspSource} data:;">
 				<link href="${codiconsUri}" rel="stylesheet" />
 				<base href="${packUri}/">
 			</head>
