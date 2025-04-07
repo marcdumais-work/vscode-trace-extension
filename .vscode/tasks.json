@@ -1,0 +1,27 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "gitleaks",
+            "type": "shell",
+            "command": "docker run -v ${PWD}:/path gitleaks:latest dir /path -v --no-color | awk 'BEGIN { ORS=\"\" } /^Finding:/     {if (NR>1) print \"\\n\"; printf \"FINDING=%s|||\", substr($0, index($0,$2)) } /^Secret:/ {printf \"SECRET=%s|||\", $2} /^RuleID:/ {printf \"RULEID=%s|||\", $2} /^Entropy:/ {printf \"ENTROPY=%s|||\", $2} /^File:/ {printf \"FILE=%s|||\", $2} /^Line:/ {printf \"LINE=%s|||\", $2} /^Fingerprint:/ {printf \"FINGERPRINT=%s|||\", $2}'",
+            "problemMatcher": {
+                "source": "gitleaks",
+                "owner": "gitleaks",
+                "fileLocation": [
+                    "relative", "${workspaceFolder}"
+                ],
+                "pattern": [
+                    {
+                        "regexp": "^FINDING=(.*?)[|]{3}SECRET=(.*?)[|]{3}RULEID=(.*?)[|]{3}ENTROPY=(.*?)[|]{3}FILE=\/path\/(.+)[|]{3}LINE=(.*?)[|]{3}FINGERPRINT=(.*?)[|]{3}$",
+                        "file": 5,
+                        "line": 6,
+                        "message": 1
+                    }
+                ]
+            }
+        }
+    ]
+}
