@@ -1,7 +1,7 @@
 {
     "private": true,
     "scripts": {
-        "prepare": "yarn tsref && lerna run prepare",
+        "prepare": "tsc -b && yarn tsref && lerna run prepare",
         "tsref": "node scripts/typescript-references.js",
         "watch": "lerna exec --stream --parallel -- \"yarn run watch\"",
         "clean": "lerna run clean",
@@ -39,9 +39,11 @@
     "workspaces": [
         "vscode-trace-common",
         "vscode-trace-webviews",
-        "vscode-trace-extension"
+        "vscode-trace-extension",
+        "local-libs/*"
     ],
     "resolutions": {
-        "@vscode/vsce": "2.25.0"
+        "@vscode/vsce": "2.25.0",
+        "@types/react": "18.3.8"
     }
 }

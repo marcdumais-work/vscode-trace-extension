@@ -27,7 +27,7 @@
     ],
     "references": [
         {
-            "path": "../base"
+            "path": "../traceviewer-base"
         }
     ]
 }
