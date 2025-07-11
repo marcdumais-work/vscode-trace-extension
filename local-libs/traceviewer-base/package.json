@@ -1,5 +1,6 @@
 {
     "name": "traceviewer-base",
+    "private": true,
     "version": "0.9.1",
     "description": "Trace Viewer base package, contains trace management utilities",
     "license": "MIT",
@@ -34,7 +35,6 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "test": "echo 'test'",
-        "watch": "tsc -w",
         "format:write": "prettier --write ./src",
         "format:check": "prettier --check ./src"
     }
