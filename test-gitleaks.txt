@@ -1,0 +1,16 @@
+This is a test - the following secret is fake
+
+setup the following secret as an environment variable:
+
+export SUPER_DUPER_SECRET="wibC7fyqq1"
+
+BTW, looking for a good password? Here are a few!
+
+"`_]TN)/+T`jp?19", "kW6hh*vu6wcF3g;", "gRoJ6ibcVv[zp}D", "8?JRgr}Kx-V('$aN-Ml_&"x%5CL)?<", "v9w1cRg4PUIVDyrSN63UTXkCgQRnxT5C"
+
+
+
+one more secret!
+
+ghp_ypwNi08kJx9H3YblGrkNFfqGaxat7d3cMPen
+
