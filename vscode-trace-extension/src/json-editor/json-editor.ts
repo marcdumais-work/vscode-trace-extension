@@ -101,14 +101,16 @@ export class JsonConfigEditor {
             vscode.languages.setTextDocumentLanguage(document, 'jsonc');
 
             this.trackedEditor = await vscode.window.showTextDocument(document, {
-                viewColumn: vscode.ViewColumn.Beside
+                viewColumn: vscode.ViewColumn.Beside,
+                preview: false,
             });
             await this.schemaService.setOpenFileSchema(this.tempFileUri, this.schema);
 
             // Return a promise that resolves when the editor is closed
             return new Promise<CustomizationSubmission>((resolve, reject) => {
-                this.closeSubscription = vscode.window.onDidChangeVisibleTextEditors(async editors => {
-                    if (this.trackedEditor && !editors.some(e => e.document.uri.fsPath === this.tempFilePath)) {
+                this.closeSubscription = vscode.window.tabGroups.onDidChangeTabs(async event => {
+                    //@ts-expect-error "Tab" type has a lot of alternate typings.  Trying to access values makes TS compiler upset.
+                    if (this.trackedEditor && event.closed.some(tab => tab.input && tab.input?.uri?.fsPath === this.tempFilePath)) {
                         try {
                             const result = await this.handleDocumentClose();
                             if (result) {
