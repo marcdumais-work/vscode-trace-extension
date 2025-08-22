@@ -109,6 +109,10 @@ export class JsonConfigEditor {
             // Return a promise that resolves when the editor is closed
             return new Promise<CustomizationSubmission>((resolve, reject) => {
                 this.closeSubscription = vscode.window.tabGroups.onDidChangeTabs(async event => {
+                    console.log('\n*** New TabChangedEvent');
+                    event.closed.forEach(t => { console.log("  Tab closed: " + t.label)});
+                    event.opened.forEach(t => { console.log("  Tab opened: " + t.label)});
+                    event.changed.forEach(t => { console.log("  Tab changed: " + t.label)});
                     //@ts-expect-error "Tab" type has a lot of alternate typings.  Trying to access values makes TS compiler upset.
                     if (this.trackedEditor && event.closed.some(tab => tab.input && tab.input?.uri?.fsPath === this.tempFilePath)) {
                         try {
