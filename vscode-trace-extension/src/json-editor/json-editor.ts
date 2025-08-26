@@ -110,10 +110,13 @@ export class JsonConfigEditor {
             return new Promise<CustomizationSubmission>((resolve, reject) => {
                 this.closeSubscription = vscode.window.tabGroups.onDidChangeTabs(async event => {
                     console.log('\n*** New TabChangedEvent');
-                    event.closed.forEach(t => { console.log("  Tab closed: " + t.label)});
-                    event.opened.forEach(t => { console.log("  Tab opened: " + t.label)});
-                    event.changed.forEach(t => { console.log("  Tab changed: " + t.label)});
-                    //@ts-expect-error "Tab" type has a lot of alternate typings.  Trying to access values makes TS compiler upset.
+                    event.closed.forEach(t => { console.log("  Tab closed in Tab Group: " + t.group.viewColumn.toString() + " : " + t.label); this.printEditorTabGroupsForConfigEditor(this.tempFilePath);});
+                    
+                    event.opened.forEach(t => { console.log("  Tab opened in Tab Group: " + t.group.viewColumn.toString() + " : " + t.label); this.printEditorTabGroupsForConfigEditor(this.tempFilePath);});
+                    
+                    event.changed.forEach(t => { console.log("  Tab changed in Tab Group: " + t.group.viewColumn.toString() + " : " + t.label); this.printEditorTabGroupsForConfigEditor(this.tempFilePath);});
+                    
+                    // @ts-expect-error "Tab" type has a lot of alternate typings.  Trying to access values makes TS compiler upset.
                     if (this.trackedEditor && event.closed.some(tab => tab.input && tab.input?.uri?.fsPath === this.tempFilePath)) {
                         try {
                             const result = await this.handleDocumentClose();
@@ -134,6 +137,18 @@ export class JsonConfigEditor {
             vscode.window.showErrorMessage(error instanceof Error ? error.message : String(error));
             return Promise.reject(error instanceof Error ? error : new Error(String(error)));
         }
+    }
+
+    private printEditorTabGroupsForConfigEditor(configEditorFilePath: string) {
+        vscode.window.tabGroups.all.forEach(group => {
+            group.tabs.forEach(tab => {
+                if (tab.input instanceof vscode.TabInputText) {
+                    if (tab.input.uri.fsPath === configEditorFilePath) {
+                        console.log("    - Config Editor Tab Found in Tab Group " + group.viewColumn.toString());
+                    }
+                }
+            });
+        });
     }
 
     /**
