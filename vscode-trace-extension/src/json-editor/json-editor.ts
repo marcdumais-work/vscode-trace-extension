@@ -116,6 +116,10 @@ export class JsonConfigEditor {
                     
                     event.changed.forEach(t => { console.log("  Tab changed in Tab Group: " + t.group.viewColumn.toString() + " : " + t.label); this.printEditorTabGroupsForConfigEditor(this.tempFilePath);});
                     
+                    
+                    if (this.isConfigEditorAlive(this.tempFilePath)) {
+                        return;
+                    }
                     // @ts-expect-error "Tab" type has a lot of alternate typings.  Trying to access values makes TS compiler upset.
                     if (this.trackedEditor && event.closed.some(tab => tab.input && tab.input?.uri?.fsPath === this.tempFilePath)) {
                         try {
@@ -149,6 +153,15 @@ export class JsonConfigEditor {
                 }
             });
         });
+    }
+
+    private isConfigEditorAlive(configEditorFilePath: string):boolean {
+        return vscode.window.tabGroups.all.some(group => 
+            group.tabs.some(tab => 
+                tab.input instanceof vscode.TabInputText && 
+                tab.input.uri.fsPath === configEditorFilePath
+            )
+        );
     }
 
     /**
